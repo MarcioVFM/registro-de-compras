@@ -41,17 +41,16 @@ export default function Input<T extends FieldValues>({
 
   return (
     <>
-      <View className="mb-4 w-full border-b pb-2">
-        <Text className="mb-1 text-sm text-white font-semibold">{label}</Text>
+      <View className="mb-4 w-full">
+        <Text className="mb-1 text-base text-white font-semibold">{label}</Text>
         <Controller
           control={control}
           name={name}
           rules={rules}
           render={({ field: { onChange, onBlur, value } }) => (
             <View
-              className={`flex-row items-center rounded-lg px-3 py-3 bg-background-secondary ${
-                error ? 'border border-red-500' : 'border border-transparent'
-              }`}
+              className={`flex-row items-center rounded-lg px-3 py-3 bg-background-secondary ${error ? 'border border-red' : ''
+                }`}
             >
               <TextInput
                 {...rest}
@@ -63,19 +62,19 @@ export default function Input<T extends FieldValues>({
                 className="flex-1 text-base text-white"
               />
               {secureTextEntry && (
-                    <TouchableOpacity
-                      onPress={() => setShowText(prev => !prev)}
-                      className="pl-2"
-                    >
-                      <MaterialIcons
-                        name={showText ? 'visibility-off' : 'visibility'}
-                        color="#9CA3AF"
-                        size={24}
-                      />
-                    </TouchableOpacity>
-                  )}
-                  {children}
-                </View>
+                <TouchableOpacity
+                  onPress={() => setShowText(prev => !prev)}
+                  className="pl-2"
+                >
+                  <MaterialIcons
+                    name={showText ? 'visibility-off' : 'visibility'}
+                    color="#9CA3AF"
+                    size={24}
+                  />
+                </TouchableOpacity>
+              )}
+              {children}
+            </View>
           )}
         />
       </View>

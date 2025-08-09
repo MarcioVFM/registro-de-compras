@@ -21,7 +21,6 @@ export default function Login() {
   })
 
   const onSubmit = (data: FormLoginParams) => {
-    console.log('Dados do formulário:', data)
     router.navigate('/home')
   }
 
@@ -56,7 +55,7 @@ export default function Login() {
       </View>
 
       <View className="pb-4">
-        <Text className="text-center text-white">Defesa Civil do Amazonas</Text>
+        <Text className="text-center text-white opacity-50 p-4">Defesa Civil do Amazonas</Text>
       </View>
     </SafeAreaView>
   )

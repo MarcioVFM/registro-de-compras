@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, TouchableOpacity, TouchableOpacityProps } from 'react-native'
 import { FontAwesome5 } from '@expo/vector-icons'
 
 type CardStatus = 'payment' | 'waiting' | 'pending'
@@ -8,12 +8,14 @@ type CardListProps = {
   title: string
   price: string
   description?: string
+  redirect: () => void
 }
 
 export default function CardList({
   status,
   title,
   price,
+  redirect,
   description,
 }: CardListProps) {
   const cardConfig = {
@@ -34,7 +36,7 @@ export default function CardList({
   const config = cardConfig[status]
 
   return (
-    <View className={`${config.bgColor} mb-3 rounded-2xl p-2`}>
+    <TouchableOpacity className={`${config.bgColor} mb-3 rounded-2xl p-2`} onPress={redirect}>
       <View className="flex-row items-center justify-between">
         <View className="flex-1 flex-row items-center">
           <View className="mr-4 h-12 w-12 items-center justify-center rounded-2xl bg-white/20">
@@ -51,6 +53,6 @@ export default function CardList({
         </View>
         <Text className="font-semibold text-white">{config.buttonText}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   )
 }

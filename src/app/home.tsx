@@ -30,7 +30,7 @@ export default function Home() {
       payday: new Date('2024-08-09')
     },
     {
-      id: '2', 
+      id: '2',
       status: 'pending',
       title: 'Abacaxi',
       price: '19,50',
@@ -71,11 +71,6 @@ export default function Home() {
   }
 
   const filteredPurchases = getFilteredPurchases()
-  
-  // Debug: verificar quantos itens estão sendo filtrados
-  console.log('Active filter:', activeFilter)
-  console.log('Total purchases:', purchases.length)
-  console.log('Filtered purchases:', filteredPurchases.length)
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('pt-BR', {
@@ -87,19 +82,19 @@ export default function Home() {
 
   const getLatestPayday = () => {
     if (filteredPurchases.length === 0) return null
-    
+
     const latestDate = filteredPurchases.reduce((latest, purchase) => {
       return purchase.payday > latest ? purchase.payday : latest
     }, filteredPurchases[0].payday)
-    
+
     return latestDate
   }
 
   const latestPayday = getLatestPayday()
 
   return (
-    <SafeAreaView className="flex-1 bg-background-primary">
-      <ScrollView 
+    <SafeAreaView className="flex-1 bg-background-primary py-8">
+      <ScrollView
         showsVerticalScrollIndicator={false}
         className="flex-1 p-4"
         contentContainerStyle={{ paddingBottom: 100 }}
@@ -118,7 +113,7 @@ export default function Home() {
           Lista de Compras
         </Text>
 
-        <TabsFilter 
+        <TabsFilter
           onFilterChange={setActiveFilter}
           activeTab={activeFilter}
         />
@@ -136,6 +131,7 @@ export default function Home() {
               status={purchase.status}
               title={purchase.title}
               price={purchase.price}
+              redirect={() => router.replace('/visu-register')}
               description={purchase.description}
             />
           ))

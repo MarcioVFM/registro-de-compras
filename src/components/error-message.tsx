@@ -7,7 +7,7 @@ export const ErrorMessage: FC<PropsWithChildren> = ({ children }) => {
   return (
     <View className="item-center flex-row">
       <MaterialIcons name="error-outline" size={16} color={colors.red} />
-      <Text className="text-red">{children}</Text>
+      <Text className="text-red ml-2">{children}</Text>
     </View>
   )
 }
