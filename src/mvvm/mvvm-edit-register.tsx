@@ -3,7 +3,7 @@ import { Alert } from 'react-native'
 import { router } from 'expo-router'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { FormRegisterBuyParams } from 'src/types/form-register-buy'
+import { FormRegisterBuyParams } from 'src/shared/types/form-register-buy'
 import { schemaRegisterBuy } from 'src/utils/schema-register-buy'
 
 export function useEditRegisterViewModel(params: any) {

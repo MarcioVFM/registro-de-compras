@@ -7,7 +7,7 @@ import { ButtonBack } from 'src/components/button-back'
 import Input from 'src/components/input'
 import StatusBuy from 'src/components/status-pay'
 import { colors } from 'src/shared/colors'
-import { FormRegisterBuyParams } from 'src/types/form-register-buy'
+import { FormRegisterBuyParams } from 'src/shared/types/form-register-buy'
 import { schemaRegisterBuy } from 'src/utils/schema-register-buy'
 
 export default function RegisterBuy() {

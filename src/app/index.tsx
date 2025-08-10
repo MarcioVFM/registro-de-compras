@@ -1,6 +1,6 @@
 import { SafeAreaView, View, Text } from 'react-native'
 import { Button } from 'src/components/Button'
-import { FormLoginParams } from 'src/types/form-login-params'
+import { FormLoginParams } from 'src/shared/types/form-login-params'
 import { useForm } from 'react-hook-form'
 import { schemaLogin } from 'src/utils/schema-login'
 import { yupResolver } from '@hookform/resolvers/yup'
