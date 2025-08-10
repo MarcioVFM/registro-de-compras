@@ -8,6 +8,7 @@ import { Button } from 'src/components/Button'
 import TabsFilter, { FilterStatus } from 'src/components/tabs-filter'
 import { router } from 'expo-router'
 import { useHomeViewModel } from 'src/mvvm/mvvm-home'
+import { formatDate } from 'src/utils/days'
 
 export default function Home() {
   const [activeFilter, setActiveFilter] = useState<FilterStatus>('all')
@@ -21,14 +22,6 @@ export default function Home() {
       refreshData()
     }, [])
   )
-
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('pt-BR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    })
-  }
 
   const getLatestPayday = () => {
     if (filteredPurchases.length === 0) return null

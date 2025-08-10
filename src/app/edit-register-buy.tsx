@@ -8,6 +8,7 @@ import StatusBuy from 'src/components/status-pay'
 import { colors } from 'src/shared/colors'
 import { useEditRegisterViewModel } from 'src/mvvm/mvvm-edit-register'
 import VisuInput from 'src/components/visu-input'
+import { formatDate } from 'src/utils/days'
 
 export default function EditRegisterBuy() {
   const params = useLocalSearchParams()
@@ -18,7 +19,6 @@ export default function EditRegisterBuy() {
     isSubmitting,
     isLoading,
     onSubmit,
-    formatDate
   } = useEditRegisterViewModel(params)
 
   return (
@@ -68,12 +68,12 @@ export default function EditRegisterBuy() {
 
         <VisuInput
           label="Data de compra"
-          result={params.payday ? formatDate(params.payday as string) : 'Data não informada'}
+          result={formatDate(params.payday as string)}
           icon={<AntDesign name="calendar" size={24} color={colors.white} />}
         />
         <VisuInput
           label="Data de vencimento"
-          result={params.expireday ? formatDate(params.payday as string) : 'Data não informada'}
+          result={formatDate(params.payday as string)}
           icon={<AntDesign name="calendar" size={24} color={colors.white} />}
         />
 

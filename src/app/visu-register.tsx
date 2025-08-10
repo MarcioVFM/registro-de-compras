@@ -7,6 +7,7 @@ import { ButtonBack } from 'src/components/button-back'
 import VisuInput from 'src/components/visu-input'
 import { colors } from 'src/shared/colors'
 import { useVisuRegisterViewModel } from 'src/mvvm/mvvm-visu-register'
+import { formatDate } from 'src/utils/days'
 
 export default function VisuRegister() {
     const params = useLocalSearchParams()
@@ -16,7 +17,6 @@ export default function VisuRegister() {
         handleEdit,
         purchaseData,
         loadPurchaseData,
-        formatDate
     } = useVisuRegisterViewModel()
 
     useEffect(() => {

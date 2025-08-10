@@ -9,14 +9,6 @@ export function useVisuRegisterViewModel() {
     const [purchaseData, setPurchaseData] = useState<FormRegisterBuyParams | null>(null)
     const { deleteByNameAndDate, findAll, findByNameAndDate } = useListRepository()
 
-    const formatDate = (date: Date | string) => {
-        if (typeof date === 'string') {
-            date = new Date(date)
-        }
-        return date.toLocaleDateString('pt-BR')
-    }
-
-
     const loadPurchaseData = async (params: any) => {
         try {
             const originalName = params.title as string
@@ -115,7 +107,6 @@ export function useVisuRegisterViewModel() {
     }
 
     return {
-        formatDate,
         isLoading,
         handleDelete,
         handleEdit,

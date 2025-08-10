@@ -10,15 +10,7 @@ import { useListRepository } from '../database/drizzle/drizzle-list-repository'
 export function useEditRegisterViewModel(params: any) {
     const [isLoading, setIsLoading] = useState(false)
     const { update, findById } = useListRepository()
-
-    const formatDate = (date: Date | string) => {
-        if (typeof date === 'string') {
-            date = new Date(date)
-        }
-        return date.toLocaleDateString('pt-BR')
-    }
-
-
+    
     const {
         control,
         handleSubmit,
@@ -71,7 +63,6 @@ export function useEditRegisterViewModel(params: any) {
     }
 
     return {
-        formatDate,
         control,
         handleSubmit,
         errors,
