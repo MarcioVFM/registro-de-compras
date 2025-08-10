@@ -52,7 +52,6 @@ export function useEditRegisterViewModel(params: any) {
     }
 
     const updatePurchase = async (purchaseId: string, data: FormRegisterBuyParams) => {
-        // Simular chamada de API
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 if (Math.random() > 0.1) {

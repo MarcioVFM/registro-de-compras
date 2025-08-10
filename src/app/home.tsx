@@ -1,70 +1,18 @@
-import { SafeAreaView, Text, View, ScrollView } from 'react-native'
+import { SafeAreaView, Text, View, ScrollView, ActivityIndicator } from 'react-native'
 import { useState } from 'react'
 import CardReviewBuy from 'src/components/card-review-buy'
 import CardList from 'src/components/card-list'
 import { Button } from 'src/components/Button'
 import TabsFilter, { FilterStatus } from 'src/components/tabs-filter'
 import { router } from 'expo-router'
-import { BuyItem, calculateReviewData } from 'src/utils/review-buy-calculate'
-
-type PurchaseItem = {
-  id: string
-  status: 'payment' | 'waiting' | 'pending'
-  title: string
-  price: string
-  description?: string
-  isOverdue?: boolean
-  payday: Date
-}
+import { useHomeViewModel } from 'src/mvvm/mvvm-home'
 
 export default function Home() {
   const [activeFilter, setActiveFilter] = useState<FilterStatus>('all')
+  const { isLoading, error, getFilteredPurchases, calculateReviewData } = useHomeViewModel()
 
-  const purchases: PurchaseItem[] = [
-    {
-      id: '1',
-      status: 'pending',
-      title: 'Abacaxi',
-      price: '1.008',
-      description: 'Atrasado',
-      isOverdue: true,
-      payday: new Date('2024-07-15')
-    },
-    {
-      id: '2',
-      status: 'waiting',
-      title: 'Notebook Dell',
-      price: '2.500,00',
-      description: 'Aguardando aprovação',
-      payday: new Date('2024-08-20')
-    },
-    {
-      id: '3',
-      status: 'payment',
-      title: 'Whey 3W MAX',
-      price: '12,00',
-      payday: new Date('2024-08-02')
-    }
-  ]
-
-  const { paidData, pendingData } = calculateReviewData(purchases as BuyItem[])
-
-  const getFilteredPurchases = () => {
-    switch (activeFilter) {
-      case 'paid':
-        return purchases.filter(item => item.status === 'payment')
-      case 'overdue':
-        return purchases.filter(item => item.status === 'pending' && item.isOverdue)
-      case 'waiting':
-        return purchases.filter(item => item.status === 'waiting')
-      case 'all':
-        return purchases
-      default:
-        return purchases
-    }
-  }
-
-  const filteredPurchases = getFilteredPurchases()
+  const filteredPurchases = getFilteredPurchases(activeFilter)
+  const { paidData, pendingData } = calculateReviewData()
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('pt-BR', {
@@ -85,6 +33,15 @@ export default function Home() {
   }
 
   const latestPayday = getLatestPayday()
+
+  if (isLoading) {
+    return (
+      <SafeAreaView className="flex-1 bg-background-primary justify-center items-center">
+        <ActivityIndicator size="large" color="#fff" />
+        <Text className="text-white mt-2">Carregando compras...</Text>
+      </SafeAreaView>
+    )
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-background-primary py-8">
@@ -119,27 +76,29 @@ export default function Home() {
         )}
 
         {filteredPurchases.length > 0 ? (
-          filteredPurchases.map((purchase) => (
-            <CardList
-              key={purchase.id}
-              status={purchase.status}
-              title={purchase.title}
-              price={purchase.price}
-              redirect={() => router.push({
-                pathname: '/visu-register',
-                params: {
-                  id: purchase.id,
-                  title: purchase.title,
-                  price: purchase.price,
-                  description: purchase.description || '',
-                  status: purchase.status,
-                  payday: purchase.payday.toISOString(),
-                  isOverdue: purchase.isOverdue?.toString() || 'false'
-                }
-              })}
-              description={purchase.description}
-            />
-          ))
+          filteredPurchases.map((purchase) => {
+            const uniqueId = `${purchase.name}-${purchase.payday.getTime()}`
+
+            return (
+              <CardList
+                key={uniqueId}
+                status={purchase.status as 'payment' | 'waiting' | 'pending'}
+                title={purchase.name}
+                price={purchase.price}
+                redirect={() => router.push({
+                  pathname: '/visu-register',
+                  params: {
+                    title: purchase.name,
+                    price: purchase.price,
+                    description: purchase.description,
+                    status: purchase.status,
+                    payday: purchase.payday.toISOString(),
+                  }
+                })}
+                description={purchase.description}
+              />
+            )
+          })
         ) : (
           <View className="py-8 items-center">
             <Text className="text-white/60 text-center">

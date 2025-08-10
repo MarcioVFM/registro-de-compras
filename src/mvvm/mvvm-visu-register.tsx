@@ -1,38 +1,17 @@
 import { useState } from 'react'
 import { Alert } from 'react-native'
 import { router } from 'expo-router'
-
-export interface PurchaseItem {
-    id: string
-    status: 'payment' | 'waiting' | 'pending'
-    title: string
-    price: string
-    description?: string
-    isOverdue?: boolean
-    payday: Date
-}
+import { ListRepository } from '../database/drizzle/drizzle-list-repository'
 
 export function useVisuRegisterViewModel() {
     const [isLoading, setIsLoading] = useState(false)
+    const listRepository = new ListRepository()
 
     const formatDate = (date: Date | string) => {
         if (typeof date === 'string') {
             date = new Date(date)
         }
         return date.toLocaleDateString('pt-BR')
-    }
-
-    const getStatusLabel = (status: string) => {
-        switch (status) {
-            case 'payment':
-                return 'Pago'
-            case 'waiting':
-                return 'Andamento'
-            case 'pending':
-                return 'Atrasado'
-            default:
-                return 'Andamento'
-        }
     }
 
     const handleDelete = async (purchaseId: string, purchaseTitle: string) => {
@@ -50,7 +29,20 @@ export function useVisuRegisterViewModel() {
                     onPress: async () => {
                         try {
                             setIsLoading(true)
-                            await deletePurchase(purchaseId)
+                            const allPurchases = await listRepository.findAll()
+                            const purchaseToDelete = allPurchases.find(purchase => {
+                                const uniqueId = `${purchase.name}-${purchase.payday.getTime()}`
+                                return uniqueId === purchaseId
+                            })
+
+                            if (!purchaseToDelete) {
+                                throw new Error('Compra não encontrada')
+                            }
+
+                            await listRepository.deleteByNameAndDate(
+                                purchaseToDelete.name,
+                                purchaseToDelete.payday
+                            )
 
                             Alert.alert(
                                 'Sucesso',
@@ -63,6 +55,7 @@ export function useVisuRegisterViewModel() {
                                 ]
                             )
                         } catch (error) {
+                            console.error('erro ao excluir aki:', error)
                             Alert.alert(
                                 'Erro',
                                 'Erro ao excluir o registro. Tente novamente.',
@@ -75,19 +68,6 @@ export function useVisuRegisterViewModel() {
                 },
             ]
         )
-    }
-
-    const deletePurchase = async (purchaseId: string) => {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if (Math.random() > 0.1) {
-                    console.log('Registro excluído:', purchaseId)
-                    resolve(true)
-                } else {
-                    reject(new Error('Erro na exclusão'))
-                }
-            }, 1000)
-        })
     }
 
     const handleEdit = (params: any) => {
@@ -108,7 +88,6 @@ export function useVisuRegisterViewModel() {
     return {
         isLoading,
         formatDate,
-        getStatusLabel,
         handleDelete,
         handleEdit
     }

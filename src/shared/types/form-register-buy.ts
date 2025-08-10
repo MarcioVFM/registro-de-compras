@@ -1,9 +1,8 @@
 export interface FormRegisterBuyParams {
-    id: number
     name: string
     description: string
-    value: string
-    payday: string
-    expireday: string
+    price: string
+    payday: Date
+    expireday: Date
     status: string
 }
