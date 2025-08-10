@@ -5,6 +5,7 @@ import CardList from 'src/components/card-list'
 import { Button } from 'src/components/Button'
 import TabsFilter, { FilterStatus } from 'src/components/tabs-filter'
 import { router } from 'expo-router'
+import { BuyItem, calculateReviewData } from 'src/utils/review-buy-calculate'
 
 type PurchaseItem = {
   id: string
@@ -23,23 +24,14 @@ export default function Home() {
     {
       id: '1',
       status: 'pending',
-      title: 'placa de video rx 6600',
-      price: '1899,99',
-      description: 'vencimento: 09 de agosto',
-      isOverdue: true,
-      payday: new Date('2024-08-09')
-    },
-    {
-      id: '2',
-      status: 'pending',
       title: 'Abacaxi',
-      price: '19,50',
+      price: '1.008',
       description: 'Atrasado',
       isOverdue: true,
       payday: new Date('2024-07-15')
     },
     {
-      id: '3',
+      id: '2',
       status: 'waiting',
       title: 'Notebook Dell',
       price: '2.500,00',
@@ -47,13 +39,15 @@ export default function Home() {
       payday: new Date('2024-08-20')
     },
     {
-      id: '4',
+      id: '3',
       status: 'payment',
       title: 'Whey 3W MAX',
-      price: 'Academia',
+      price: '12,00',
       payday: new Date('2024-08-02')
     }
   ]
+
+  const { paidData, pendingData } = calculateReviewData(purchases as BuyItem[])
 
   const getFilteredPurchases = () => {
     switch (activeFilter) {
@@ -105,8 +99,8 @@ export default function Home() {
 
         <Text className="mb-4 text-lg font-bold text-white">Atualizações</Text>
         <View className="flex-row justify-between">
-          <CardReviewBuy type="paid" count={10} amount="300,00" />
-          <CardReviewBuy type="pending" count={5} amount="-198,00" />
+          <CardReviewBuy type="paid" count={paidData.count} amount={`R$ ${paidData.amount}`} />
+          <CardReviewBuy type="pending" count={pendingData.count} amount={`R$ ${pendingData.amount}`} />
         </View>
 
         <Text className="my-4 text-lg font-bold text-white">
@@ -131,7 +125,18 @@ export default function Home() {
               status={purchase.status}
               title={purchase.title}
               price={purchase.price}
-              redirect={() => router.replace('/visu-register')}
+              redirect={() => router.push({
+                pathname: '/visu-register',
+                params: {
+                  id: purchase.id,
+                  title: purchase.title,
+                  price: purchase.price,
+                  description: purchase.description || '',
+                  status: purchase.status,
+                  payday: purchase.payday.toISOString(),
+                  isOverdue: purchase.isOverdue?.toString() || 'false'
+                }
+              })}
               description={purchase.description}
             />
           ))
