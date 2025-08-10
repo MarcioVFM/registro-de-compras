@@ -16,9 +16,9 @@ export default function TabsFilter({ onFilterChange, activeTab = 'all' }: TabsFi
   }, [activeTab])
 
   const tabs = [
-    { id: 'all' as FilterStatus, label: 'Todas' },
-    { id: 'paid' as FilterStatus, label: 'Pagas' },
-    { id: 'overdue' as FilterStatus, label: 'Atrasadas' },
+    { id: 'all' as FilterStatus, label: 'Todos' },
+    { id: 'paid' as FilterStatus, label: 'Pagos' },
+    { id: 'overdue' as FilterStatus, label: 'Atrasados' },
     { id: 'waiting' as FilterStatus, label: 'Andamento' }
   ]
 
@@ -29,26 +29,24 @@ export default function TabsFilter({ onFilterChange, activeTab = 'all' }: TabsFi
 
   return (
     <View className="mb-6">
-      <View className="flex-row justify-between">
-        {tabs.map((tab) => (
+      <View className="flex-row justify-center">
+        {tabs.map((tab, index) => (
           <TouchableOpacity
             key={tab.id}
             onPress={() => handleTabPress(tab.id)}
-            className={`flex-1 py-3 mx-1 rounded-lg items-center ${
-              selectedTab === tab.id 
-                ? 'bg-white' 
-                : 'bg-background-secondary'
-            }`}
+            className={`items-center ${index > 0 ? 'ml-12' : ''}`}
           >
-            <Text 
-              className={`font-semibold ${
-                selectedTab === tab.id 
-                  ? 'text-background-primary' 
-                  : 'text-white'
-              }`}
+            <Text
+              className={`text-base font-medium ${selectedTab === tab.id
+                ? 'text-green'
+                : 'text-gray-400'
+                }`}
             >
               {tab.label}
             </Text>
+            {selectedTab === tab.id && (
+              <View className="mt-1 h-0.5 bg-green w-full" />
+            )}
           </TouchableOpacity>
         ))}
       </View>

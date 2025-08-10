@@ -9,29 +9,34 @@ import migrations from '../../drizzle/migrations/migrations'
 const DATABASE_NAME = 'registro_de_compras.db'
 
 export default function LayoutRoot() {
-  // const expoDB = SQLite.openDatabaseSync(DATABASE_NAME)
-  // const db = drizzle(expoDB)
+  const expoDB = SQLite.openDatabaseSync(DATABASE_NAME)
+  const db = drizzle(expoDB)
 
-  // const { success, error } = useMigrations(db, migrations)
+  const { success, error } = useMigrations(db, migrations)
 
-  // if (error) {
-  //   return (
-  //     return
-  //     // <View className=" flex-1 justify-center itens-center ">
-  //     //   <Text>{error.message}</Text>
-  //     // </View>
-  //   )
-  // }
+  if (error) {
+    return (
+      <View className="flex-1 justify-center items-center bg-black">
+        <StatusBar barStyle="light-content" />
+        <Text className="text-red-500 font-bold">{error.message}</Text>
+      </View>
+    )
+  }
 
-  // if (!success) {
-  //   return (
-  //     <ActivityIndicator className=" flex-1 justify-center itens-center " />
-  //   )
-  // }
+  if (!success) {
+    return (
+      <View className="flex-1 justify-center items-center bg-black">
+        <StatusBar barStyle="light-content" />
+        <ActivityIndicator size="large" color="#fff" />
+        <Text className="text-white mt-2">Carregando banco de dados...</Text>
+      </View>
+    )
+  }
 
   return (
-    // <SQLite.SQLiteProvider databaseName={DATABASE_NAME}>
+    <SQLite.SQLiteProvider databaseName={DATABASE_NAME}>
+      <StatusBar barStyle="light-content" />
       <Slot />
-    // </SQLite.SQLiteProvider>
+    </SQLite.SQLiteProvider>
   )
 }

@@ -15,7 +15,7 @@ module.exports = function (api) {
                     },
                 },
             ],
-            ["inline-import", { "extensions": [".sqlite"] }],
+            ["inline-import", { "extensions": [".sql"] }],
         ],
     }
 }
