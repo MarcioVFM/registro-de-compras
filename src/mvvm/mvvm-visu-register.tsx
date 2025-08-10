@@ -2,16 +2,47 @@ import { useState } from 'react'
 import { Alert } from 'react-native'
 import { router } from 'expo-router'
 import { useListRepository } from '../database/drizzle/drizzle-list-repository'
+import { FormRegisterBuyParams } from '../shared/types/form-register-buy'
 
 export function useVisuRegisterViewModel() {
     const [isLoading, setIsLoading] = useState(false)
-    const { deleteByNameAndDate, findAll } = useListRepository()
+    const [purchaseData, setPurchaseData] = useState<FormRegisterBuyParams | null>(null)
+    const { deleteByNameAndDate, findAll, findByNameAndDate } = useListRepository()
 
     const formatDate = (date: Date | string) => {
         if (typeof date === 'string') {
             date = new Date(date)
         }
         return date.toLocaleDateString('pt-BR')
+    }
+
+
+    const loadPurchaseData = async (params: any) => {
+        try {
+            const originalName = params.title as string
+            const originalPayday = params.payday ? new Date(params.payday as string) : new Date()
+
+            const uniqueId = params.id as string
+            if (uniqueId) {
+                const allPurchases = await findAll()
+                const purchase = allPurchases.find(purchase => {
+                    const itemUniqueId = `${purchase.name}-${purchase.payday.getTime()}`
+                    return itemUniqueId === uniqueId
+                })
+
+                if (purchase) {
+                    setPurchaseData(purchase)
+                    return
+                }
+            }
+
+            const purchase = await findByNameAndDate(originalName, originalPayday)
+            if (purchase) {
+                setPurchaseData(purchase)
+            }
+        } catch (error) {
+            console.error('fudeu:', error)
+        }
     }
 
     const handleDelete = async (purchaseId: string, purchaseTitle: string) => {
@@ -78,15 +109,17 @@ export function useVisuRegisterViewModel() {
                 description: params.description as string,
                 status: params.status as string,
                 payday: params.payday as string,
-                isOverdue: params.isOverdue as string
+                expireday: params.expireday as string
             }
         })
     }
 
     return {
-        isLoading,
         formatDate,
+        isLoading,
         handleDelete,
-        handleEdit
+        handleEdit,
+        purchaseData,
+        loadPurchaseData
     }
-}
+}''

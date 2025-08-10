@@ -30,7 +30,6 @@ export function useListRepository(): IListRepository {
                 status: newList.status
             }
         } catch (error) {
-            console.error('Erro ao criar item:', error)
             throw error
         }
     }
@@ -47,7 +46,70 @@ export function useListRepository(): IListRepository {
                 status: item.status
             }))
         } catch (error) {
-            console.error('Erro ao buscar itens:', error)
+            throw error
+        }
+    }
+
+    async function findByNameAndDate(name: string, payday: Date): Promise<{ id: number } & FormRegisterBuyParams | undefined> {
+        try {
+            const paydayString = payday.toISOString().split('T')[0]
+            const results = await db.select().from(list).where(
+                and(
+                    eq(list.name, name),
+                    eq(list.payday, paydayString)
+                )
+            )
+
+            if (results.length === 0) {
+                return undefined
+            }
+
+            const item = results[0]
+            return {
+                id: item.id,
+                name: item.name,
+                description: item.description,
+                price: item.value,
+                payday: new Date(item.payday),
+                expireday: new Date(item.expireday),
+                status: item.status
+            }
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async function findById(uniqueId: string): Promise<{ id: number } & FormRegisterBuyParams | undefined> {
+        try {
+            const allItems = await findAll()
+
+            for (const item of allItems) {
+                const itemUniqueId = `${item.name}-${item.payday.getTime()}`
+                if (itemUniqueId === uniqueId) {
+                    const paydayString = item.payday.toISOString().split('T')[0]
+                    const results = await db.select().from(list).where(
+                        and(
+                            eq(list.name, item.name),
+                            eq(list.payday, paydayString)
+                        )
+                    )
+
+                    if (results.length > 0) {
+                        const dbItem = results[0]
+                        return {
+                            id: dbItem.id,
+                            name: dbItem.name,
+                            description: dbItem.description,
+                            price: dbItem.value,
+                            payday: new Date(dbItem.payday),
+                            expireday: new Date(dbItem.expireday),
+                            status: dbItem.status
+                        }
+                    }
+                }
+            }
+            return undefined
+        } catch (error) {
             throw error
         }
     }
@@ -93,5 +155,5 @@ export function useListRepository(): IListRepository {
         }
     }
 
-    return { create, findAll, update, deleteByNameAndDate }
+    return { create, findAll, findByNameAndDate, findById, update, deleteByNameAndDate }
 } 

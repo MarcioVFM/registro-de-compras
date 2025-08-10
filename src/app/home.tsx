@@ -1,5 +1,7 @@
 import { SafeAreaView, Text, View, ScrollView, ActivityIndicator } from 'react-native'
 import { useState } from 'react'
+import { useFocusEffect } from 'expo-router'
+import { useCallback } from 'react'
 import CardReviewBuy from 'src/components/card-review-buy'
 import CardList from 'src/components/card-list'
 import { Button } from 'src/components/Button'
@@ -13,6 +15,12 @@ export default function Home() {
 
   const filteredPurchases = getFilteredPurchases(activeFilter)
   const { paidData, pendingData } = calculateReviewData()
+
+  useFocusEffect(
+    useCallback(() => {
+      refreshData()
+    }, [])
+  )
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('pt-BR', {
@@ -94,6 +102,7 @@ export default function Home() {
                     description: purchase.description,
                     status: purchase.status,
                     payday: purchase.payday.toISOString(),
+                    expireday: purchase.expireday.toISOString(),
                   }
                 })}
                 description={purchase.description}

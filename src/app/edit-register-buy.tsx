@@ -7,6 +7,7 @@ import Input from 'src/components/input'
 import StatusBuy from 'src/components/status-pay'
 import { colors } from 'src/shared/colors'
 import { useEditRegisterViewModel } from 'src/mvvm/mvvm-edit-register'
+import VisuInput from 'src/components/visu-input'
 
 export default function EditRegisterBuy() {
   const params = useLocalSearchParams()
@@ -16,7 +17,8 @@ export default function EditRegisterBuy() {
     errors,
     isSubmitting,
     isLoading,
-    onSubmit
+    onSubmit,
+    formatDate
   } = useEditRegisterViewModel(params)
 
   return (
@@ -30,7 +32,6 @@ export default function EditRegisterBuy() {
         <Text className="my-4 text-xl font-bold text-white">
           Dados do produto
         </Text>
-
         <Input
           label="Nome do produto"
           control={control}
@@ -40,7 +41,6 @@ export default function EditRegisterBuy() {
         >
           <Entypo name="box" size={24} color={errors.name ? colors.red : colors.white} />
         </Input>
-
         <Input
           label="Descrição do produto"
           control={control}
@@ -66,25 +66,16 @@ export default function EditRegisterBuy() {
           Dados de pagamento
         </Text>
 
-        <Input
+        <VisuInput
           label="Data de compra"
-          control={control}
-          name="payday"
-          placeholder="dd/mm/aaaa"
-          error={errors.payday}
-        >
-          <AntDesign name="calendar" size={24} color={errors.payday ? colors.red : colors.white} />
-        </Input>
-
-        <Input
+          result={params.payday ? formatDate(params.payday as string) : 'Data não informada'}
+          icon={<AntDesign name="calendar" size={24} color={colors.white} />}
+        />
+        <VisuInput
           label="Data de vencimento"
-          control={control}
-          name="expireday"
-          placeholder="dd/mm/aaaa"
-          error={errors.expireday}
-        >
-          <AntDesign name="calendar" size={24} color={errors.expireday ? colors.red : colors.white} />
-        </Input>
+          result={params.expireday ? formatDate(params.payday as string) : 'Data não informada'}
+          icon={<AntDesign name="calendar" size={24} color={colors.white} />}
+        />
 
         <Text className="my-4 text-xl font-bold text-white">
           Status
@@ -95,10 +86,9 @@ export default function EditRegisterBuy() {
           name="status"
           error={errors.status}
         />
-
         <View className="mt-8">
           <Button
-            title="Salvar"
+            title={isLoading ? "Salvando..." : "Salvar"}
             onPress={handleSubmit(onSubmit)}
             disabled={isSubmitting || isLoading}
           />
