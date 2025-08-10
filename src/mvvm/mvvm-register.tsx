@@ -1,26 +1,21 @@
 import { useState } from 'react'
 import { router } from 'expo-router'
-import { ListRepository } from '../database/drizzle/drizzle-list-repository'
+import { useListRepository } from '../database/drizzle/drizzle-list-repository'
 import { FormRegisterBuyParams } from '../shared/types/form-register-buy'
 
 export function useRegisterViewModel() {
     const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState<string | null>(null)
 
-    const listRepository = new ListRepository()
+    const { create } = useListRepository()
 
     const createPurchase = async (data: FormRegisterBuyParams) => {
         try {
             setIsLoading(true)
-            setError(null)
-
-            const newPurchase = await listRepository.create(data)
-            console.log('Compra criada com sucesso:', newPurchase)
+            await create(data)
             router.back()
 
         } catch (err) {
-            console.error('Erro ao criar compra:', err)
-            setError('Erro ao salvar a compra. Tente novamente.')
+            console.error('deu erro n compra fuck', err)
         } finally {
             setIsLoading(false)
         }
@@ -33,6 +28,5 @@ export function useRegisterViewModel() {
     return {
         handleSubmit,
         isLoading,
-        error
     }
 } 

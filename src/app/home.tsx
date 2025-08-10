@@ -9,7 +9,7 @@ import { useHomeViewModel } from 'src/mvvm/mvvm-home'
 
 export default function Home() {
   const [activeFilter, setActiveFilter] = useState<FilterStatus>('all')
-  const { isLoading, error, getFilteredPurchases, calculateReviewData } = useHomeViewModel()
+  const { isLoading, getFilteredPurchases, calculateReviewData, refreshData } = useHomeViewModel()
 
   const filteredPurchases = getFilteredPurchases(activeFilter)
   const { paidData, pendingData } = calculateReviewData()
@@ -88,6 +88,7 @@ export default function Home() {
                 redirect={() => router.push({
                   pathname: '/visu-register',
                   params: {
+                    id: uniqueId,
                     title: purchase.name,
                     price: purchase.price,
                     description: purchase.description,

@@ -4,4 +4,5 @@ export interface IListRepository {
   findAll(): Promise<FormRegisterBuyParams[]>
   create(data: FormRegisterBuyParams): Promise<FormRegisterBuyParams>
   update(id: number, data: Partial<FormRegisterBuyParams>): Promise<FormRegisterBuyParams | undefined>
+  deleteByNameAndDate(name: string, payday: Date): Promise<void>
 }

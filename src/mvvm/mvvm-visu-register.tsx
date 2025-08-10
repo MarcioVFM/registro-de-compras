@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { Alert } from 'react-native'
 import { router } from 'expo-router'
-import { ListRepository } from '../database/drizzle/drizzle-list-repository'
+import { useListRepository } from '../database/drizzle/drizzle-list-repository'
 
 export function useVisuRegisterViewModel() {
     const [isLoading, setIsLoading] = useState(false)
-    const listRepository = new ListRepository()
+    const { deleteByNameAndDate, findAll } = useListRepository()
 
     const formatDate = (date: Date | string) => {
         if (typeof date === 'string') {
@@ -29,7 +29,7 @@ export function useVisuRegisterViewModel() {
                     onPress: async () => {
                         try {
                             setIsLoading(true)
-                            const allPurchases = await listRepository.findAll()
+                            const allPurchases = await findAll()
                             const purchaseToDelete = allPurchases.find(purchase => {
                                 const uniqueId = `${purchase.name}-${purchase.payday.getTime()}`
                                 return uniqueId === purchaseId
@@ -38,8 +38,7 @@ export function useVisuRegisterViewModel() {
                             if (!purchaseToDelete) {
                                 throw new Error('Compra não encontrada')
                             }
-
-                            await listRepository.deleteByNameAndDate(
+                            await deleteByNameAndDate(
                                 purchaseToDelete.name,
                                 purchaseToDelete.payday
                             )
@@ -55,10 +54,9 @@ export function useVisuRegisterViewModel() {
                                 ]
                             )
                         } catch (error) {
-                            console.error('erro ao excluir aki:', error)
                             Alert.alert(
                                 'Erro',
-                                'Erro ao excluir o registro. Tente novamente.',
+                                `Erro ao excluir o registro: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
                                 [{ text: 'OK' }]
                             )
                         } finally {

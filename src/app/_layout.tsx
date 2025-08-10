@@ -9,8 +9,16 @@ import migrations from '../../drizzle/migrations/migrations'
 const DATABASE_NAME = 'registro_de_compras.db'
 
 export default function LayoutRoot() {
-  const expoDB = SQLite.openDatabaseSync(DATABASE_NAME)
-  const db = drizzle(expoDB)
+  return (
+    <SQLite.SQLiteProvider databaseName={DATABASE_NAME}>
+      <DatabaseInitializer />
+    </SQLite.SQLiteProvider>
+  )
+}
+
+function DatabaseInitializer() {
+  const database = SQLite.useSQLiteContext()
+  const db = drizzle(database)
 
   const { success, error } = useMigrations(db, migrations)
 
@@ -34,9 +42,9 @@ export default function LayoutRoot() {
   }
 
   return (
-    <SQLite.SQLiteProvider databaseName={DATABASE_NAME}>
+    <>
       <StatusBar barStyle="light-content" />
       <Slot />
-    </SQLite.SQLiteProvider>
+    </>
   )
 }

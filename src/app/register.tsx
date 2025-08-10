@@ -12,7 +12,7 @@ import { FormRegisterBuyParams } from 'src/shared/types/form-register-buy'
 import { schemaRegisterBuy } from 'src/utils/schema-register-buy'
 
 export default function RegisterBuy() {
-  const { handleSubmit: handleViewModelSubmit, isLoading, error } = useRegisterViewModel()
+  const { handleSubmit: handleViewModelSubmit, isLoading } = useRegisterViewModel()
 
   const {
     control,

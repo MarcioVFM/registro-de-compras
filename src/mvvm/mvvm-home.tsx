@@ -1,22 +1,20 @@
 import { useState, useEffect } from 'react'
-import { ListRepository } from '../database/drizzle/drizzle-list-repository'
+import { useListRepository } from '../database/drizzle/drizzle-list-repository'
 import { FormRegisterBuyParams } from '../shared/types/form-register-buy'
 
 export function useHomeViewModel() {
     const [purchases, setPurchases] = useState<FormRegisterBuyParams[]>([])
     const [isLoading, setIsLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
 
-    const listRepository = new ListRepository()
+    const { findAll } = useListRepository()
 
     const loadPurchases = async () => {
         try {
             setIsLoading(true)
-            setError(null)
-            const data = await listRepository.findAll()
+            const data = await findAll()
             setPurchases(data)
         } catch (err) {
-            console.error('deu errado fuck:', err)
+            console.error('Erro detalhado ao carregar compras:', err)
         } finally {
             setIsLoading(false)
         }
@@ -64,7 +62,6 @@ export function useHomeViewModel() {
     return {
         purchases,
         isLoading,
-        error,
         getFilteredPurchases,
         calculateReviewData,
         refreshData: loadPurchases

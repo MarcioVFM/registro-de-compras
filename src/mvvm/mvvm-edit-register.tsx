@@ -55,7 +55,6 @@ export function useEditRegisterViewModel(params: any) {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 if (Math.random() > 0.1) {
-                    console.log('Compra atualizada:', purchaseId, data)
                     resolve(true)
                 } else {
                     reject(new Error('Erro na atualização'))
